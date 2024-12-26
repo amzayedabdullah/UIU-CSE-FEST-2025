@@ -88,8 +88,18 @@
         const ctx = canvas.getContext('2d');
         const previewText = document.getElementById('preview-text');
 
+        // Ensure the frame image is properly loaded
         const frameImage = new Image();
-        frameImage.src = 'frame.png'; // Make sure this path is correct
+        frameImage.src = 'frame.png'; // Make sure the path is correct (update if needed)
+        
+        frameImage.onload = () => {
+            console.log("Frame image loaded successfully!");
+        };
+
+        frameImage.onerror = (e) => {
+            console.error("Error loading frame image:", e);
+            alert("Frame image could not be loaded. Please check the path.");
+        };
 
         uploadInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -110,6 +120,7 @@
                     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous canvas content
                     ctx.drawImage(profileImage, 0, 0, canvas.width, canvas.height);
 
+                    // Draw frame after both profile image and frame are loaded
                     frameImage.onload = () => {
                         ctx.drawImage(frameImage, 0, 0, canvas.width, canvas.height);
                         downloadButton.disabled = false;
