@@ -89,7 +89,7 @@
         const previewText = document.getElementById('preview-text');
 
         const frameImage = new Image();
-        frameImage.src = 'frame.png';
+        frameImage.src = 'frame.png'; // Make sure this path is correct
 
         uploadInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -107,6 +107,7 @@
                     canvas.width = profileImage.width * scale;
                     canvas.height = profileImage.height * scale;
 
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous canvas content
                     ctx.drawImage(profileImage, 0, 0, canvas.width, canvas.height);
 
                     frameImage.onload = () => {
