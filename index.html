@@ -5,50 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="twitter:title" content="Frame Generator">
     <link rel="icon" href="https://i.ibb.co/M1WTZh5/Logo-Logo-v1-Black.png" type="image/x-icon">
-    <title>UIU CSE FEST Frame Generator</title>
+    <title>Frame Generator</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet" />
     <style>
         body {
             font-family: 'Rubik', sans-serif;
             background-color: #000;
             color: #FF6F00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
-        }
-        .navbar {
-            background-color: #000;
-            border-bottom: 2px solid #FF6F00;
-        }
-        .navbar h1 {
-            color: #FF6F00;
-            font-weight: 700;
+            overflow: hidden;
         }
         .container {
-            max-width: 600px;
-            margin: 30px auto;
-        }
-        .card {
+            text-align: center;
+            max-width: 90%;
             background-color: #000;
             border: 2px solid #FF6F00;
             border-radius: 15px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
             color: #FF6F00;
         }
-        .card-header {
+        .upload-label {
+            display: inline-block;
+            padding: 12px 20px;
             background-color: #FF6F00;
             color: #000;
-            font-size: 18px;
+            border-radius: 25px;
             font-weight: 500;
-            text-align: center;
-            border-radius: 15px 15px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .card-body {
-            padding: 30px;
-            text-align: center;
+        .upload-label:hover {
+            background-color: #E65100;
+            box-shadow: 0 4px 10px rgba(255, 111, 0, 0.4);
+        }
+        input[type="file"] {
+            display: none;
+        }
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border-radius: 50%;
+            border: 4px solid #FF6F00;
+            width: 90%;
+            max-width: 300px; /* Default for mobile */
+            height: auto;
         }
         .btn-custom {
-            margin: 10px 0;
             padding: 12px 20px;
             background-color: #FF6F00;
             color: #000;
@@ -62,66 +74,34 @@
             background-color: #E65100;
             box-shadow: 0 4px 10px rgba(255, 111, 0, 0.4);
         }
-        canvas {
-            border-radius: 50%;
-            border: 4px solid #FF6F00;
-            margin: 20px 0;
-            display: block;
-            max-width: 100%;
-            height: auto;
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                padding: 40px;
+            }
+            canvas {
+                max-width: 400px; /* Larger canvas on tablets */
+            }
         }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #FF6F00;
-        }
-        input[type="file"] {
-            display: none;
-        }
-        .upload-label {
-            display: inline-block;
-            padding: 12px 20px;
-            background-color: #FF6F00;
-            color: #000;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .upload-label:hover {
-            background-color: #E65100;
-            box-shadow: 0 4px 10px rgba(255, 111, 0, 0.4);
+        @media (min-width: 1024px) {
+            canvas {
+                max-width: 500px; /* Even larger canvas on desktops */
+            }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark">
-        <div class="container">
-            <h1> UIU CSE FEST 2025 </h1>
-        </div>
-    </nav>
-
     <div class="container">
-        <div class="card">
-            <div class="card-header">Upload Your Photo</div>
-            <div class="card-body">
-                <p class="mb-4">Select an image to apply a circular frame:</p>
-                <label for="upload-image" class="upload-label">Choose File</label>
-                <input type="file" id="upload-image" accept="image/*" />
-                <canvas id="canvas" width="1000" height="1000"></canvas>
-                <button id="download" class="btn-custom" disabled>Download Framed Image</button>
-            </div>
-        </div>
+        <h1>Frame Generator</h1>
+        <label for="upload-image" class="upload-label">Upload Image</label>
+        <input type="file" id="upload-image" accept="image/*" />
+        <canvas id="canvas" width="1000" height="1000"></canvas>
+        <button id="download" class="btn-custom" disabled>Download Framed Image</button>
     </div>
 
-    <footer>
-        <p>&copy; A. M. Zayed Abdullah. All rights reserved.</p>
-    </footer>
-
     <script>
-        const frameSrc = "https://i.ibb.co.com/vsj8LN4/Untitled-2-01.png";
+        const frameSrc = "https://i.ibb.co/vsj8LN4/Untitled-2-01.png";
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const downloadButton = document.getElementById('download');
@@ -129,10 +109,6 @@
 
         const frameImg = new Image();
         frameImg.src = frameSrc;
-        frameImg.onload = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-        };
 
         uploadInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -151,6 +127,7 @@
                         frameImg.onload = () => {
                             ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
                         };
+                        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
                         downloadButton.disabled = false;
                     };
                 };
@@ -166,8 +143,5 @@
         });
     </script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
