@@ -8,56 +8,95 @@
     <title>Frame Generator</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet" />
     <style>
         body {
             font-family: 'Rubik', sans-serif;
-            background-color: #f4f4f9;
-            text-align: center;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+            padding: 0;
         }
         .navbar {
-            background-color: #FF6F00;
+            background-color: #343a40;
         }
         .navbar h1 {
             color: white;
+            font-weight: 700;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #343a40;
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            text-align: center;
+            border-radius: 15px 15px 0 0;
+        }
+        .card-body {
+            padding: 30px;
+            text-align: center;
         }
         .btn-custom {
-            margin: 10px 5px;
-            padding: 10px 20px;
+            margin: 10px 0;
+            padding: 12px 20px;
             background-color: #FF6F00;
             color: white;
+            font-weight: 500;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         .btn-custom:hover {
             background-color: #E65100;
+            box-shadow: 0 4px 10px rgba(255, 111, 0, 0.4);
         }
         canvas {
-            margin-top: 20px;
-            border: 2px solid #ddd;
-            border-radius: 50%; /* To ensure a circular display */
+            border-radius: 50%;
+            border: 4px solid #FF6F00;
+            margin: 20px 0;
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-dark">
-        <a class="navbar-brand mx-auto" href="#">
+        <div class="container">
             <h1>Frame Generator</h1>
-        </a>
+        </div>
     </nav>
 
-    <div class="container my-4">
-        <h3>Upload your photo to apply the circular frame:</h3>
-        <input type="file" id="upload-image" accept="image/*" class="btn-custom" />
-
-        <div class="my-4">
-            <canvas id="canvas"></canvas>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">Upload Your Photo</div>
+            <div class="card-body">
+                <p class="mb-4">Select an image to apply a circular frame:</p>
+                <input type="file" id="upload-image" accept="image/*" class="btn-custom" />
+                <canvas id="canvas" width="1000" height="1000"></canvas>
+                <button id="download" class="btn-custom" disabled>Download Framed Image</button>
+            </div>
         </div>
-
-        <button id="download" class="btn-custom" disabled>Download Image</button>
     </div>
+
+    <footer>
+        <p>&copy; 2024 Frame Generator. All rights reserved.</p>
+    </footer>
 
     <script>
         const frameSrc = "https://i.ibb.co.com/vsj8LN4/Untitled-2-01.png"; // Your frame URL
@@ -65,6 +104,14 @@
         const ctx = canvas.getContext('2d');
         const downloadButton = document.getElementById('download');
         const uploadInput = document.getElementById('upload-image');
+
+        // Preload frame and display it on canvas
+        const frameImg = new Image();
+        frameImg.src = frameSrc;
+        frameImg.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+        };
 
         // Handle file upload and add circular image to canvas
         uploadInput.addEventListener('change', (event) => {
@@ -75,24 +122,20 @@
                     const image = new Image();
                     image.src = e.target.result;
                     image.onload = () => {
-                        const size = 400; // Set a consistent canvas size for a circle
-                        canvas.width = size;
-                        canvas.height = size;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                        // Clip the canvas to a circular shape
+                        // Clip canvas to a circular shape
                         ctx.beginPath();
-                        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+                        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
                         ctx.closePath();
                         ctx.clip();
 
                         // Draw the uploaded image
-                        ctx.drawImage(image, 0, 0, size, size);
+                        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-                        // Load and draw the frame
-                        const frameImg = new Image();
-                        frameImg.src = frameSrc;
+                        // Draw the frame on top
                         frameImg.onload = () => {
-                            ctx.drawImage(frameImg, 0, 0, size, size);
+                            ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
                         };
 
                         // Enable download button
@@ -112,7 +155,6 @@
         });
     </script>
 
-    <!-- External Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
