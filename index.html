@@ -3,81 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@YourFatGuy">
+    <meta name="twitter:creator" content="@YourFatGuy">
+    <meta name="twitter:title" content="Frame Generator">
+    <meta name="twitter:description" content="Frame Generator Project">
+    <meta name="twitter:image" content="https://i.ibb.co/qJhwsNv/Winner-Badge.png">
+    <link rel="icon" href="https://i.ibb.co/HBKYsZD/logo.png" type="image/x-icon">
     <title>Profile Frame Generator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Rubik', sans-serif;
             text-align: center;
-            background-color: #1a1a1a; /* Black background */
-            color: #f4f4f9; /* Light grey text */
+            background-color: #1a1a1a;
+            color: #f4f4f9;
             margin: 0;
             padding: 0;
         }
-        header {
-            background-color: #FF6F00; /* Orange header */
+        .navbar {
+            background-color: #FF6F00;
+        }
+        .navbar h1 {
             color: white;
-            padding: 20px;
         }
-        h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        p {
-            font-size: 16px;
-            margin: 10px 0;
-        }
-        .container {
-            margin: 20px auto;
-            max-width: 600px;
-            padding: 20px;
-            background: #333; /* Dark background for container */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        #canvas-container {
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        canvas {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        .btn {
+        .btn-custom {
             margin: 10px 5px;
             padding: 10px 20px;
-            background-color: #FF6F00; /* Orange buttons */
+            background-color: #FF6F00;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
         }
-        .btn:hover {
-            background-color: #E65100; /* Darker orange for hover */
+        .btn-custom:hover {
+            background-color: #E65100;
         }
-        .btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
+        .alert-custom {
+            background-color: #ffcc00;
+        }
+        #canvas-container {
+            margin-top: 20px;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            margin-top: 10px;
         }
     </style>
 </head>
+
 <body>
-    <header>
-        <h1>UIU CSE Fest 2025 Profile Frame Generator</h1>
-    </header>
-    <div class="container">
-        <p>Upload your profile picture and preview it with the UIU CSE Fest frame. Download the final version!</p>
+    <nav class="navbar navbar-dark">
+        <a class="navbar-brand mx-auto" href="#">
+            <h1 class="p-2 text-wrap title font-weight-bold">Profile Frame Generator</h1>
+        </a>
+    </nav>
 
-        <input type="file" id="upload" accept="image/*" class="btn">
-        <button id="download" class="btn" disabled>Download</button>
+    <div class="container my-4">
+        <div class="alert alert-custom text-center" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> View the frames below for reference
+        </div>
 
-        <div id="canvas-container">
+        <div class="text-center">
+            <button type="button" class="btn-custom" id="member">Member</button>
+            <button type="button" class="btn-custom" id="champion">Champion</button>
+            <button type="button" class="btn-custom" id="winner">Winners</button>
+            <button type="button" class="btn-custom" id="tejas">Tejas</button>
+            <button type="button" class="btn-custom" id="sophists">Sophists</button>
+        </div>
+        
+        <div class="container my-4">
+            <p><strong>Choose your profile picture</strong></p>
+            <input type="file" id="upload" accept="image/*" class="btn-custom" />
+        </div>
+
+        <div class="container my-4">
             <canvas id="canvas"></canvas>
-            <p id="preview-text" style="display: none;">Preview of your profile picture with the frame:</p>
+        </div>
+
+        <div class="container my-4">
+            <button id="download" class="btn-custom" disabled>Download</button>
         </div>
     </div>
 
@@ -86,57 +94,80 @@
         const downloadButton = document.getElementById('download');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const previewText = document.getElementById('preview-text');
 
-        // Ensure the frame image is properly loaded
-        const frameImage = new Image();
-        frameImage.src = 'frame.png'; // Make sure the path is correct (update if needed)
-        
-        frameImage.onload = () => {
-            console.log("Frame image loaded successfully!");
+        // Frame image (update path as necessary)
+        const frameImages = {
+            member: 'https://i.ibb.co/rsywbpx/Member-Badge.png',
+            champion: 'https://i.ibb.co/BKbDr95/Champion-Badge.png',
+            winner: 'https://i.ibb.co/qJhwsNv/Winner-Badge.png',
+            tejas: 'https://i.ibb.co/DfYdTmw/Tejas-Badge.png',
+            sophists: 'https://i.ibb.co/Qr6tTgg/Sophists-Badge.png',
         };
 
-        frameImage.onerror = (e) => {
-            console.error("Error loading frame image:", e);
-            alert("Frame image could not be loaded. Please check the path.");
-        };
+        let currentFrame = null;
 
-        uploadInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const profileImage = new Image();
-                profileImage.src = e.target.result;
-
-                profileImage.onload = () => {
-                    const maxWidth = 500; // Max width for the canvas
-                    const scale = Math.min(maxWidth / profileImage.width, 1);
-
-                    canvas.width = profileImage.width * scale;
-                    canvas.height = profileImage.height * scale;
-
-                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous canvas content
-                    ctx.drawImage(profileImage, 0, 0, canvas.width, canvas.height);
-
-                    // Draw frame after both profile image and frame are loaded
-                    frameImage.onload = () => {
-                        ctx.drawImage(frameImage, 0, 0, canvas.width, canvas.height);
-                        downloadButton.disabled = false;
-                        previewText.style.display = 'block';
-                    };
-                };
-            };
-            reader.readAsDataURL(file);
+        // Handle frame type selection
+        document.querySelectorAll('button[id]').forEach(button => {
+            button.addEventListener('click', () => {
+                currentFrame = frameImages[button.id];
+                updateFramePreview(currentFrame);
+            });
         });
 
+        // Update canvas with selected frame
+        function updateFramePreview(frame) {
+            if (currentFrame && canvas) {
+                const frameImg = new Image();
+                frameImg.src = frame;
+                frameImg.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before drawing
+                    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+                    downloadButton.disabled = false;
+                };
+            }
+        }
+
+        // Handle image upload
+        uploadInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const image = new Image();
+                    image.src = e.target.result;
+                    image.onload = () => {
+                        const scale = Math.min(500 / image.width, 1);
+                        canvas.width = image.width * scale;
+                        canvas.height = image.height * scale;
+                        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                        // If a frame is selected, draw it
+                        if (currentFrame) {
+                            const frameImg = new Image();
+                            frameImg.src = currentFrame;
+                            frameImg.onload = () => {
+                                ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+                            };
+                        }
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle download button click
         downloadButton.addEventListener('click', () => {
             const link = document.createElement('a');
-            link.download = 'UIU_CSE_Fest_2025_Frame.png';
+            link.download = 'profile_with_frame.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
     </script>
+
+    <!-- External Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
