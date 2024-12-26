@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Frame Generator</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .container {
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        #canvas-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .btn {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CSE Fest Profile Frame Generator</h1>
+    </header>
+    <div class="container">
+        <p>Upload your profile picture and preview it with the CSE Fest frame. Download the final version!</p>
+
+        <input type="file" id="upload" accept="image/*" class="btn">
+        <button id="download" class="btn" disabled>Download</button>
+
+        <div id="canvas-container">
+            <canvas id="canvas"></canvas>
+            <p id="preview-text" style="display: none;">Preview of your profile picture with the frame:</p>
+        </div>
+    </div>
+
+    <script>
+        const uploadInput = document.getElementById('upload');
+        const downloadButton = document.getElementById('download');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const previewText = document.getElementById('preview-text');
+
+        const frameImage = new Image();
+        frameImage.src = 'frame.png';
+
+        uploadInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const profileImage = new Image();
+                profileImage.src = e.target.result;
+
+                profileImage.onload = () => {
+                    const maxWidth = 500; // Max width for the canvas
+                    const scale = Math.min(maxWidth / profileImage.width, 1);
+
+                    canvas.width = profileImage.width * scale;
+                    canvas.height = profileImage.height * scale;
+
+                    ctx.drawImage(profileImage, 0, 0, canvas.width, canvas.height);
+
+                    frameImage.onload = () => {
+                        ctx.drawImage(frameImage, 0, 0, canvas.width, canvas.height);
+                        downloadButton.disabled = false;
+                        previewText.style.display = 'block';
+                    };
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        downloadButton.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'CSE_Fest_Frame.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>
