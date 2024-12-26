@@ -3,25 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Frame Generator</title>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Frame Generator">
+    <meta name="twitter:description" content="Frame Generator Project">
+    <meta name="twitter:image" content="https://i.ibb.co/qJhwsNv/Winner-Badge.png">
+    <link rel="icon" href="https://i.ibb.co/HBKYsZD/logo.png" type="image/x-icon">
+    <title>Frame Generator</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <style>
         body {
             font-family: 'Rubik', sans-serif;
+            background-color: #f4f4f9;
             text-align: center;
-            background-color: #1a1a1a;
-            color: #f4f4f9;
-            margin: 0;
-            padding: 0;
         }
         .navbar {
             background-color: #FF6F00;
         }
         .navbar h1 {
             color: white;
+        }
+        .frame-container img {
+            width: 200px;
+            margin: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .frame-container img:hover {
+            transform: scale(1.1);
         }
         .btn-custom {
             margin: 10px 5px;
@@ -35,83 +46,77 @@
         .btn-custom:hover {
             background-color: #E65100;
         }
-        .alert-custom {
-            background-color: #ffcc00;
-        }
-        #canvas-container {
-            margin-top: 20px;
-        }
         canvas {
+            margin-top: 20px;
             border: 2px solid #ddd;
-            margin-top: 10px;
         }
     </style>
 </head>
-
 <body>
+
     <nav class="navbar navbar-dark">
         <a class="navbar-brand mx-auto" href="#">
-            <h1 class="p-2 text-wrap title font-weight-bold">Profile Frame Generator</h1>
+            <h1>Frame Generator</h1>
         </a>
     </nav>
 
     <div class="container my-4">
-        <div class="alert alert-custom text-center" role="alert">
-            <i class="fas fa-exclamation-triangle"></i> View the frame below
-        </div>
-         <div class="text-center">
-            <button type="button" class="btn-custom" id="frame">Frame</button>
-        </div>
-        
-        <div class="container my-4">
-            <p><strong>Choose your profile picture</strong></p>
-            <input type="file" id="upload" accept="image/*" class="btn-custom" />
+        <h2>Select a frame to apply to your photo:</h2>
+        <div class="frame-container">
+            <img src="https://i.ibb.co/rsywbpx/Member-Badge.png" alt="Member Frame" id="frame-member" />
+            <img src="https://i.ibb.co/BKbDr95/Champion-Badge.png" alt="Champion Frame" id="frame-champion" />
+            <img src="https://i.ibb.co/qJhwsNv/Winner-Badge.png" alt="Winner Frame" id="frame-winner" />
+            <img src="https://i.ibb.co/DfYdTmw/Tejas-Badge.png" alt="Tejas Frame" id="frame-tejas" />
+            <img src="https://i.ibb.co/Qr6tTgg/Sophists-Badge.png" alt="Sophists Frame" id="frame-sophists" />
         </div>
 
-        <div class="container my-4">
+        <h3>Upload your photo to apply the frame:</h3>
+        <input type="file" id="upload-image" accept="image/*" class="btn-custom" />
+
+        <div class="my-4">
             <canvas id="canvas"></canvas>
         </div>
 
-        <div class="container my-4">
-            <button id="download" class="btn-custom" disabled>Download</button>
-        </div>
+        <button id="download" class="btn-custom" disabled>Download Image</button>
     </div>
 
     <script>
-        const uploadInput = document.getElementById('upload');
-        const downloadButton = document.getElementById('download');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-
-        // Frame image (update path as necessary)
         const frameImages = {
-            frame: 'https://ibb.co.com/kmf76dN',
+            "frame-member": "https://i.ibb.co/rsywbpx/Member-Badge.png",
+            "frame-champion": "https://i.ibb.co/BKbDr95/Champion-Badge.png",
+            "frame-winner": "https://i.ibb.co/qJhwsNv/Winner-Badge.png",
+            "frame-tejas": "https://i.ibb.co/DfYdTmw/Tejas-Badge.png",
+            "frame-sophists": "https://i.ibb.co/Qr6tTgg/Sophists-Badge.png"
         };
 
-        let currentFrame = null;
+        let selectedFrame = null;
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const downloadButton = document.getElementById('download');
+        const uploadInput = document.getElementById('upload-image');
 
-        // Handle frame type selection
-        document.querySelectorAll('button[id]').forEach(button => {
-            button.addEventListener('click', () => {
-                currentFrame = frameImages[button.id];
-                updateFramePreview(currentFrame);
+        // Frame selection event listener
+        document.querySelectorAll('.frame-container img').forEach(img => {
+            img.addEventListener('click', () => {
+                selectedFrame = frameImages[img.id];
+                updateCanvas();
             });
         });
 
-        // Update canvas with selected frame
-        function updateFramePreview(frame) {
-            if (currentFrame && canvas) {
-                const frameImg = new Image();
-                frameImg.src = frame;
-                frameImg.onload = () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before drawing
-                    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-                    downloadButton.disabled = false;
-                };
-            }
+        // Function to update canvas with image and frame
+        function updateCanvas() {
+            if (!selectedFrame) return;
+
+            const frameImg = new Image();
+            frameImg.src = selectedFrame;
+
+            frameImg.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous canvas content
+                ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+            };
         }
 
-        // Handle image upload
+        // Handle file upload and add image to canvas
         uploadInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -120,19 +125,25 @@
                     const image = new Image();
                     image.src = e.target.result;
                     image.onload = () => {
+                        // Adjust canvas size
                         const scale = Math.min(500 / image.width, 1);
                         canvas.width = image.width * scale;
                         canvas.height = image.height * scale;
+
+                        // Draw image on canvas
                         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-                        // If a frame is selected, draw it
-                        if (currentFrame) {
+                        // If a frame is selected, apply it
+                        if (selectedFrame) {
                             const frameImg = new Image();
-                            frameImg.src = currentFrame;
+                            frameImg.src = selectedFrame;
                             frameImg.onload = () => {
                                 ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
                             };
                         }
+
+                        // Enable download button
+                        downloadButton.disabled = false;
                     };
                 };
                 reader.readAsDataURL(file);
@@ -153,5 +164,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>
