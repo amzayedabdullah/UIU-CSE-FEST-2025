@@ -8,13 +8,13 @@
         body {
             font-family: 'Roboto', sans-serif;
             text-align: center;
-            background-color: #f4f4f9;
-            color: #333;
+            background-color: #1a1a1a; /* Black background */
+            color: #f4f4f9; /* Light grey text */
             margin: 0;
             padding: 0;
         }
         header {
-            background-color: #007BFF;
+            background-color: #FF6F00; /* Orange header */
             color: white;
             padding: 20px;
         }
@@ -30,7 +30,7 @@
             margin: 20px auto;
             max-width: 600px;
             padding: 20px;
-            background: white;
+            background: #333; /* Dark background for container */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
@@ -49,7 +49,7 @@
         .btn {
             margin: 10px 5px;
             padding: 10px 20px;
-            background-color: #007BFF;
+            background-color: #FF6F00; /* Orange buttons */
             color: white;
             border: none;
             border-radius: 5px;
@@ -57,7 +57,7 @@
             font-size: 16px;
         }
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #E65100; /* Darker orange for hover */
         }
         .btn:disabled {
             background-color: #ccc;
@@ -67,10 +67,10 @@
 </head>
 <body>
     <header>
-        <h1>CSE Fest Profile Frame Generator</h1>
+        <h1>UIU CSE Fest 2025 Profile Frame Generator</h1>
     </header>
     <div class="container">
-        <p>Upload your profile picture and preview it with the CSE Fest frame. Download the final version!</p>
+        <p>Upload your profile picture and preview it with the UIU CSE Fest frame. Download the final version!</p>
 
         <input type="file" id="upload" accept="image/*" class="btn">
         <button id="download" class="btn" disabled>Download</button>
@@ -121,7 +121,7 @@
 
         downloadButton.addEventListener('click', () => {
             const link = document.createElement('a');
-            link.download = 'CSE_Fest_Frame.png';
+            link.download = 'UIU_CSE_Fest_2025_Frame.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
