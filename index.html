@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,6 +21,7 @@
             margin: 0;
             overflow: hidden;
         }
+
         .container {
             text-align: center;
             max-width: 90%;
@@ -29,11 +31,13 @@
             padding: 20px;
             box-sizing: border-box;
         }
+
         .container h1 {
             font-size: 2rem;
             margin-bottom: 20px;
             color: #FF6F00;
         }
+
         .upload-label {
             display: inline-block;
             padding: 12px 20px;
@@ -44,22 +48,27 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .upload-label:hover {
             background-color: #E65100;
             box-shadow: 0 4px 10px rgba(255, 111, 0, 0.4);
         }
+
         input[type="file"] {
             display: none;
         }
+
         canvas {
             display: block;
             margin: 20px auto;
             border-radius: 50%;
             border: 4px solid #FF6F00;
             width: 90%;
-            max-width: 300px; /* Default for mobile */
+            max-width: 300px;
+            /* Default for mobile */
             height: auto;
         }
+
         .btn-custom {
             padding: 12px 20px;
             background-color: #FF6F00;
@@ -70,26 +79,33 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .btn-custom:hover {
             background-color: #E65100;
             box-shadow: 0 4px 10px rgba(255, 111, 0, 0.4);
         }
+
         @media (min-width: 768px) {
             .container {
                 max-width: 600px;
                 padding: 40px;
             }
+
             canvas {
-                max-width: 400px; /* Larger canvas on tablets */
+                max-width: 400px;
+                /* Larger canvas on tablets */
             }
         }
+
         @media (min-width: 1024px) {
             canvas {
-                max-width: 500px; /* Even larger canvas on desktops */
+                max-width: 500px;
+                /* Even larger canvas on desktops */
             }
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -108,6 +124,7 @@
         const uploadInput = document.getElementById('upload-image');
 
         const frameImg = new Image();
+        frameImg.crossOrigin = "anonymous"; // Ensure cross-origin is allowed
         frameImg.src = frameSrc;
 
         uploadInput.addEventListener('change', (event) => {
@@ -116,7 +133,6 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const image = new Image();
-                    image.src = e.target.result;
                     image.onload = () => {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         ctx.beginPath();
@@ -126,10 +142,14 @@
                         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
                         frameImg.onload = () => {
                             ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+                            downloadButton.disabled = false;
                         };
-                        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-                        downloadButton.disabled = false;
+                        if (frameImg.complete) {
+                            ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+                            downloadButton.disabled = false;
+                        }
                     };
+                    image.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
@@ -144,4 +164,5 @@
     </script>
 
 </body>
+
 </html>
