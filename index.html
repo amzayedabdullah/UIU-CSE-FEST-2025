@@ -108,18 +108,21 @@
 
 <body>
 
-    <div class="container">
-        <h1>UIU CSE FEST 2025</h1>
-        <label for="upload-image" class="upload-label">Upload Image</label>
-        <input type="file" id="upload-image" accept="image/*" />
-        <canvas id="canvas" width="1000" height="1000"></canvas>
-        <button id="download" class="btn-custom" disabled>Download Framed Image</button>
-        <br><br><br>
-        <p style="color: grey; font-size: 0.6rem;">&copy; A. M. Zayed Abdullah | UIU CSE FEST 2025 | All Rights Reserved </p>
-    </div>
+<div class="container">
+    <h1>UIU CSE FEST 2025</h1>
+    <p>Register for the event <a href="https://csefest.uiu.ac.bd/" target="_blank">here</a>.</p>
+    <p>Last date to register: 05 January 2025</p>
+    <p>Fest days: 17-18 January 2025</p>
+    <label for="upload-image" class="upload-label">Upload Image</label>
+    <input type="file" id="upload-image" accept="image/*" />
+    <canvas id="canvas" width="1000" height="1000"></canvas>
+    <button id="download" class="btn-custom" disabled>Download Framed Image</button>
+    <br><br><br>
+    <p style="color: grey; font-size: 0.6rem;">&copy; A. M. Zayed Abdullah | UIU CSE FEST 2025 | All Rights Reserved </p>
+</div>
 
     <script>
-        const frameSrc = "https://i.ibb.co/vsj8LN4/Untitled-2-01.png";
+        const frameSrc = "https://i.ibb.co/2YB3JX2/Artboard-1.png";
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const downloadButton = document.getElementById('download');
